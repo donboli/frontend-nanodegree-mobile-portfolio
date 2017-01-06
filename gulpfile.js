@@ -23,3 +23,28 @@ gulp.task('clean', function () {
 
   return del('./index.html');
 });
+
+
+gulp.task('images', function() {
+  var responsive = require('gulp-responsive');
+  var imagemin = require('gulp-imagemin');
+
+  gulp.src('img/*')
+    .pipe(responsive({
+      '*.jpg': {
+      },
+      '*.png': {
+      }
+    }, {
+      // Global configuration for all images
+      // Use progressive (interlace) scan for JPEG and PNG output
+      progressive: true,
+      // Zlib compression level of PNG output format
+      compressionLevel: 9,
+      // Strip all metadata
+      withMetadata: false,
+    }))
+    .pipe(gulp.dest('dist'))
+    .pipe(imagemin())
+    .pipe(gulp.dest('public'));
+});
