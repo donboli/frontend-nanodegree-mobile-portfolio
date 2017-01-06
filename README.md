@@ -6,6 +6,10 @@ To get started, check out the repository and inspect the code.
 
 ### Getting started
 
+### Gulp
+Gulp is being used to minify and autoprefix CSS, uglify JS, and inline most of the resluting assets.
+src_index.html is the working file, index.html is the Gulp task-runners output. Thus, any changes should be applied at src_index.html, since index.html gets rewritten every time Gulp runs.
+
 ####Part 1: Optimize PageSpeed Insights score for index.html
 
 Some useful tips to help you get started:
