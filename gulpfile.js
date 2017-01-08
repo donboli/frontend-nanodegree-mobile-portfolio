@@ -33,27 +33,33 @@ gulp.task('compress_images', function() {
   var responsive = require('gulp-responsive');
   var imagemin = require('gulp-imagemin');
 
-  gulp.src('img/*')
+  var config = {
+    quality: 70,
+    // Global configuration for all images
+    // Use progressive (interlace) scan for JPEG and PNG output
+    progressive: true,
+    // Zlib compression level of PNG output format
+    compressionLevel: 9,
+    // Strip all metadata
+    withMetadata: false,
+  };
+
+  gulp.src(['img/*', '!img/pizzeria.jpg'])
     .pipe(responsive({
-      '*.jpg': {
-      },
-      'pizzeria.jpg': {
+      '*': {}
+    }, config))
+    .pipe(imagemin())
+    .pipe(gulp.dest('img/compressed'));
+
+  gulp.src('img/pizzeria.jpg')
+    .pipe(responsive({
+      '*': {
+        height: 75,
         width: 100
       },
-      '*.png': {
-      }
-    }, {
-      quality: 100,
-      // Global configuration for all images
-      // Use progressive (interlace) scan for JPEG and PNG output
-      progressive: true,
-      // Zlib compression level of PNG output format
-      compressionLevel: 9,
-      // Strip all metadata
-      withMetadata: false,
-    }))
+    }, config))
     .pipe(imagemin())
     .pipe(gulp.dest('img/compressed'));
 });
 
-gulp.task('default', ['clean', 'build_index', 'compress_images']);
+gulp.task('default', ['build_index', 'compress_images']);
