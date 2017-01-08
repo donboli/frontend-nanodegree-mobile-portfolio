@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 
-gulp.task('default', ['clean'], function() {
+gulp.task('build_index', ['clean'], function() {
   var inline = require('gulp-inline')
     , uglify = require('gulp-uglify')
     , minifyCss = require('gulp-minify-css')
@@ -29,7 +29,7 @@ gulp.task('clean', function () {
   return del('./index.html');
 });
 
-gulp.task('images', function() {
+gulp.task('compress_images', function() {
   var responsive = require('gulp-responsive');
   var imagemin = require('gulp-imagemin');
 
@@ -37,9 +37,13 @@ gulp.task('images', function() {
     .pipe(responsive({
       '*.jpg': {
       },
+      'pizzeria.jpg': {
+        width: 100
+      },
       '*.png': {
       }
     }, {
+      quality: 100,
       // Global configuration for all images
       // Use progressive (interlace) scan for JPEG and PNG output
       progressive: true,
@@ -49,5 +53,7 @@ gulp.task('images', function() {
       withMetadata: false,
     }))
     .pipe(imagemin())
-    .pipe(gulp.dest('public'));
+    .pipe(gulp.dest('img/compressed'));
 });
+
+gulp.task('default', ['clean', 'build_index', 'compress_images']);
