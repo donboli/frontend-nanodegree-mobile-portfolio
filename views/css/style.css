@@ -29,10 +29,15 @@ form {
   font-weight: 800;
 }
 
-.mover {
-  position: fixed;
-  width: 256px;
+#movingPizzas1 {
+  will-change: transform;
   z-index: -1;
+  position: fixed;
+}
+
+.mover {
+  width: 256px;
+  position: absolute;
 }
 
 .randomPizzaContainer {
