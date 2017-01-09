@@ -449,6 +449,9 @@ var resizePizzas = function(size) {
     var newWidths = [];
     var newSize = sizeSwitcher(size);
 
+    // This code was changed to prevent FSL.
+    // Now there are to batch processes taking place. One for reading
+    // layout properties, the other one to modify the styles.
     for (var i = 0; i < randomPizzaContainer.length; i++) {
       var dx = determineDx(randomPizzaContainer[i], newSize, windowWidth);
       newWidths.push((randomPizzaContainer[i].offsetWidth + dx) + 'px');
@@ -506,6 +509,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var s = 256;
   var leftSpacing = document.querySelector('.container').offsetWidth/2 + 'px';
 
+  /*
+    This chunk of code has been altered from its original version.
+    Before there were a lot of pizzas being appended.
+    The vast majority of them wouldn't even be visible to the user,
+    since they were fixed to the viewport.
+    Now only the visible pizzas are appended to their container.
+  */
   for (var i = 0; i < 3; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';

@@ -12,7 +12,7 @@ gulp.task('build_index', ['clean'], function() {
       base: './',
       js: uglify,
       css: [minifyCss],
-      disabledTypes: ['svg', 'img'], // Only inline css files
+      disabledTypes: ['svg', 'img'],
       ignore: ['css/print.css']
     }))
     .pipe(htmlmin({
@@ -20,7 +20,23 @@ gulp.task('build_index', ['clean'], function() {
       removeComments: true
     }))
     .pipe(rename('index.html'))
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest('dist'));
+
+  gulp.src('views/pizza.html')
+    .pipe(inline({
+      base: './',
+      js: uglify,
+      css: [minifyCss],
+      disabledTypes: ['svg', 'img']
+    }))
+    .pipe(htmlmin({
+      collapseWhitespace: true,
+      removeComments: true
+    }))
+    .pipe(gulp.dest('dist/views'));
+
+  gulp.src('views/images/*')
+    .pipe(gulp.dest('dist/views/images'))
 });
 
 gulp.task('clean', function () {
@@ -49,7 +65,7 @@ gulp.task('compress_images', function() {
       '*': {}
     }, config))
     .pipe(imagemin())
-    .pipe(gulp.dest('img/compressed'));
+    .pipe(gulp.dest('dist/img'));
 
   gulp.src('img/pizzeria.jpg')
     .pipe(responsive({
@@ -64,7 +80,7 @@ gulp.task('compress_images', function() {
       }],
     }, config))
     .pipe(imagemin())
-    .pipe(gulp.dest('img/compressed'));
+    .pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('default', ['build_index', 'compress_images']);
