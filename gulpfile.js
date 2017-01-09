@@ -53,10 +53,15 @@ gulp.task('compress_images', function() {
 
   gulp.src('img/pizzeria.jpg')
     .pipe(responsive({
-      '*': {
+      '*': [{
         height: 75,
-        width: 100
-      },
+        width: 100,
+        rename: { suffix: '-small' }
+      }, {
+        height: 270,
+        width: 360,
+        rename: { suffix: '-medium' }
+      }],
     }, config))
     .pipe(imagemin())
     .pipe(gulp.dest('img/compressed'));
