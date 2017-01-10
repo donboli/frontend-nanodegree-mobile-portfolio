@@ -1,13 +1,13 @@
 var gulp = require('gulp');
 
+var minifyCss = require('gulp-minify-css');
+
 gulp.task('build_index', ['clean'], function() {
   var inline = require('gulp-inline')
     , uglify = require('gulp-uglify')
-    , minifyCss = require('gulp-minify-css')
-    , rename = require('gulp-rename')
     , htmlmin = require('gulp-htmlmin');
 
-  gulp.src('src_index.html')
+  gulp.src('index.html')
     .pipe(inline({
       base: './',
       js: uglify,
@@ -19,7 +19,6 @@ gulp.task('build_index', ['clean'], function() {
       collapseWhitespace: true,
       removeComments: true
     }))
-    .pipe(rename('index.html'))
     .pipe(gulp.dest('dist'));
 
   gulp.src('views/pizza.html')
@@ -34,18 +33,18 @@ gulp.task('build_index', ['clean'], function() {
       removeComments: true
     }))
     .pipe(gulp.dest('dist/views'));
+});
 
+gulp.task('copy_resources', ['clean'], function() {
   gulp.src('views/images/*')
-    .pipe(gulp.dest('dist/views/images'))
+    .pipe(gulp.dest('dist/views/images'));
+
+  gulp.src('css/print.css')
+    .pipe(minifyCss())
+    .pipe(gulp.dest('dist/css'));
 });
 
-gulp.task('clean', function () {
-  var del = require('del');
-
-  return del('./index.html');
-});
-
-gulp.task('compress_images', function() {
+gulp.task('compress_images', ['clean'], function() {
   var responsive = require('gulp-responsive');
   var imagemin = require('gulp-imagemin');
 
@@ -83,4 +82,10 @@ gulp.task('compress_images', function() {
     .pipe(gulp.dest('dist/img'));
 });
 
-gulp.task('default', ['build_index', 'compress_images']);
+gulp.task('clean', function () {
+  var del = require('del');
+
+  return del('dist/*');
+});
+
+gulp.task('default', ['build_index', 'compress_images', 'copy_resources']);
