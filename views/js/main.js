@@ -454,7 +454,7 @@ var resizePizzas = function(size) {
       Now there are two batch processes taking place. One for reading
       layout properties, the other one to modify the styles.
       Since all pizzas have the same size, the determineDX function call has been taken
-      out of the loop and been applied to only the first one.
+      out of the loop and applied to only the first one.
     */
     var dx = determineDx(randomPizzaContainer[0], newSize, windowWidth);
     for (var i = 0; i < randomPizzaContainer.length; i++) {

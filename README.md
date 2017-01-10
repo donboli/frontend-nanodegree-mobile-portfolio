@@ -34,3 +34,33 @@ You can download and install it [here](https://ngrok.com/download).
 After installing it, you can run `ngrok http 8080`, while at the same time running a 
 webserver on port 8080. The forwarding link to the project will be displayed 
 by the ngrok CLI.
+
+## Optimizations
+
+### index.html
+- Minified HTML
+- Minified CSS
+- Inlined JS and CSS
+- Uglified JS
+- Images have been compressed and optimized
+
+### views/js/main.js
+- **updatePositions**:
+    This code has been split into 2 batch processes. The first one reads layout for every .mover element. The second one sets the `left` style attribute for all of those elements.
+    This results in a much faster animation while scrolling.
+- **changePizzaSizes**:
+    The code was changed to prevent FSL.
+    Now there are two batch processes taking place. One for reading
+    layout properties, the other one to modify the styles.
+    Since all pizzas have the same size, the determineDX function call has been taken
+    out of the loop and applied to only the first one.
+- **DOMContentLoaded event listener function**:
+    The amount of .mover pizzas has been decreased by calculating it dynamically,
+    based on the screen height.
+    Since the vast majority of them were never visible, the user won't notice any
+    difference in their quantity.
+
+### views/css/style.css
+- **.mover class**:
+    The pizzas have been placed each on their own composition layer to prevent them
+    from being repainted on every movement.
