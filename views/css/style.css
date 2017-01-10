@@ -29,19 +29,15 @@ form {
   font-weight: 800;
 }
 
-/*
-The #movingPizzas1 container of the .mover background pizzas is on its own composition layer.
-Thus, the .mover images don't need to be repainted while scrolling and move much faster.
-*/
-#movingPizzas1 {
-  will-change: transform;
-  z-index: -1;
-  position: fixed;
-}
-
 .mover {
   width: 256px;
-  position: absolute;
+  z-index: -1;
+  position: fixed;
+  /*
+    The pizzas have been placed each on their own composition layer to prevent them
+    from being repainted on every movement.
+  */
+  will-change: transform;
 }
 
 .randomPizzaContainer {

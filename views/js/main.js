@@ -503,27 +503,52 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average scripting time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
+// Moves the sliding background pizzas based on scroll position
+function updatePositions() {
+  frame++;
+  window.performance.mark("mark_start_frame");
+
+  var items = document.querySelectorAll('.mover');
+  var phases = [];
+
+  for (var i = 0; i < items.length; i++) {
+    phases.push(Math.sin((document.body.scrollTop / 1250) + (i % 5)));
+  }
+
+  for (var i = 0; i < items.length; i++) {
+    items[i].style.left = items[i].basicLeft + 100 * phases[i] + 'px';
+  }
+
+  // User Timing API to the rescue again. Seriously, it's worth learning.
+  // Super easy to create custom metrics.
+  window.performance.mark("mark_end_frame");
+  window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
+  if (frame % 10 === 0) {
+    var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
+    logAverageFrame(timesToUpdatePosition);
+  }
+}
+
+// runs updatePositions on scroll
+window.addEventListener('scroll', updatePositions);
+
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
-  var cols = 1;
+  var cols = 8;
   var s = 256;
-  var leftSpacing = document.querySelector('.container').offsetWidth/2 + 'px';
-
-  /*
-    This chunk of code has been altered from its original version.
-    Before there were a lot of pizzas being appended.
-    The vast majority of them wouldn't even be visible to the user,
-    since they were fixed to the viewport.
-    Now only the visible pizzas are appended to their container.
-  */
-  for (var i = 0; i < 3; i++) {
+  // The amount of .mover pizzas has been decreased in order to make them move faster.
+  // Since the vast majority of them were never visible, the user won't notice any
+  // difference in their quantity.
+  var movingPizzasContainer = document.querySelector("#movingPizzas1");
+  for (var i = 0; i < 22; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
+    elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    elem.style.left = leftSpacing;
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    movingPizzasContainer.appendChild(elem);
   }
+  updatePositions();
 });
