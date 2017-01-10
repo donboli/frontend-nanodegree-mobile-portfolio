@@ -449,11 +449,15 @@ var resizePizzas = function(size) {
     var newWidths = [];
     var newSize = sizeSwitcher(size);
 
-    // This code was changed to prevent FSL.
-    // Now there are to batch processes taking place. One for reading
-    // layout properties, the other one to modify the styles.
+    /*
+      This code was changed to prevent FSL.
+      Now there are two batch processes taking place. One for reading
+      layout properties, the other one to modify the styles.
+      Since all pizzas have the same size, the determineDX function call has been taken
+      out of the loop and been applied to only the first one.
+    */
+    var dx = determineDx(randomPizzaContainer[0], newSize, windowWidth);
     for (var i = 0; i < randomPizzaContainer.length; i++) {
-      var dx = determineDx(randomPizzaContainer[i], newSize, windowWidth);
       newWidths.push((randomPizzaContainer[i].offsetWidth + dx) + 'px');
     }
 
@@ -475,8 +479,9 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+// The assignment has been moved out of the loop, since it only needs to run once.
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -536,12 +541,19 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  // The amount of .mover pizzas has been decreased in order to make them move faster.
-  // Since the vast majority of them were never visible, the user won't notice any
-  // difference in their quantity.
+  var rows = screen.height / s;
+  var numberOfPizzas = rows * cols;
   var movingPizzasContainer = document.querySelector("#movingPizzas1");
-  for (var i = 0; i < 22; i++) {
-    var elem = document.createElement('img');
+  /*
+    The amount of .mover pizzas has been decreased by calculating it dynamically,
+    based on the screen height.
+    Since the vast majority of them were never visible, the user won't notice any
+    difference in their quantity.
+  */
+  console.log('number of pizzas: '+ numberOfPizzas);
+  var elem;
+  for (var i = 0; i < numberOfPizzas; i++) {
+    elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
